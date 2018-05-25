@@ -1,7 +1,8 @@
 # Evolution.Inbreeding
 Evolution Submission
 
-# Pipeline developed for Smith et al. (2018) for Evolution
+# Pipeline developed for Smith et al. (2018) - Strikingly high levels of heterozygosity despite 
+# 20 years of inbreeding in a clonal honey bee
 
 # You will need the following in your PATH
 # bwa
@@ -96,3 +97,21 @@ java -jar /path/to/GenomeAnalysisTK.jar -T HaplotypeCaller -R
 /path/to/.fasta -I /path/to/_final.bam --dbsnp /path/to/.vcf
 -stand_call_conf 30 -stand_emit_conf 10 -o
 /path/output.raw.snps.indels.vcf
+
+# create file with only SNPs
+
+java -jar /path/to/GenomeAnalysisTK.jar -T SelectVariants -R 
+/path/to/.fasta -V /path/to/.vcf -selectType SNP -o /path/to/.vcf
+
+# create file with only INDELs
+
+java -jar /path/to/GenomeAnalysisTK.jar -T SelectVariants -R 
+/path/to/.fasta -V /path/to/.vcf -selectType INDEL -o /path/to/.vcf
+
+# remove data from scaffolds 17 & 18 
+
+sed '/^17./ d' /path/to/.vcf > /path/to/.vcf 
+sed '/^18./ d' /path/to/.vcf > /path/to/.vcf 
+
+
+
