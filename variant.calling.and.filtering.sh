@@ -4,6 +4,9 @@ Evolution Submission
 # Pipeline developed for Smith et al. (2018) - Strikingly high levels of heterozygosity despite 
 # 20 years of inbreeding in a clonal honey bee
 
+# Note there are two other scripts that accompany this:
+# calculate.correct.denominator.sh & calculate.window.numerator.denominator.sh
+
 # You will need the following in your PATH
 # bwa
 # samtools
