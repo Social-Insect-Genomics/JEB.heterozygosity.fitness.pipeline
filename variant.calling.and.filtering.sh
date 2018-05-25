@@ -1,5 +1,5 @@
 # Evolution.Inbreeding
-Evolution Submission
+
 
 # Pipeline developed for Smith et al. (2018) - Strikingly high levels of heterozygosity despite 
 # 20 years of inbreeding in a clonal honey bee
