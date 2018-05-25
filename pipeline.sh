@@ -113,5 +113,37 @@ java -jar /path/to/GenomeAnalysisTK.jar -T SelectVariants -R
 sed '/^17./ d' /path/to/.vcf > /path/to/.vcf 
 sed '/^18./ d' /path/to/.vcf > /path/to/.vcf 
 
+# remove low quality SNPs
 
+gawk '$0~/^#/ || $7!~/LowQual/' /path/to/.vcf  > /path/to/.vcf
+
+# identify SNPs with a Fisher's strand bias > 60
+
+java -jar /path/to/GenomeAnalysisTK.jar -T VariantFiltration -R 
+/path/to/.fasta -V /path/to/.vcf --filterExpression "FS > 60.0" --filterName "rFS" -o /path/to/.vcf
+
+# remove SNPs with a strand bias
+
+grep -v 'rFS' path/to/.vcf > path/to/.vcf
+
+
+# identify SNPs with a mapping quality < 40
+
+java -jar /path/to/GenomeAnalysisTK.jar -T VariantFiltration -R
+/path/to/.fasta -V /path/to/.vcf --filterExpression "MQ < 40.0" --filterName "rMQ" 
+-o /path/to/
+
+# remove SNPs with a mapping quality < 40
+
+grep -v 'rMQ' /path/to/.vcf > /path/to/.vcf
+
+# identify SNPs with a quality of depth value < 2
+
+java -jar /path/to/GenomeAnalysisTK.jar -T VariantFiltration -R
+/path/to/.fasta -V /path/to/.vcf --filterExpression "QD < 2.0" --filterName "rQD" 
+-o /path/to/
+
+# remove SNPs with a quality of depth value < 2
+
+grep -v 'rQD' /path/to/.vcf > /path/to/.vcf
 
