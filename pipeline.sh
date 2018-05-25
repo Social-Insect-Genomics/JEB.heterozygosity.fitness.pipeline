@@ -147,3 +147,12 @@ java -jar /path/to/GenomeAnalysisTK.jar -T VariantFiltration -R
 
 grep -v 'rQD' /path/to/.vcf > /path/to/.vcf
 
+# identify SNPs with a genotype quality < 20
+
+vcftools --vcf /path/to/.vcf --minGQ 20 --recode --out /path/to/.vcf
+
+# remove SNPs with a genotype quality < 20
+
+sed '/\.\/\./d' /path/to/.vcf > /path/to/.vcf
+
+
