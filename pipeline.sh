@@ -10,6 +10,7 @@ Evolution Submission
 # picard
 # GATK
 # VCFtools
+# bcftools
 # bedtools
 # blastn
 # SnpEff
@@ -155,4 +156,68 @@ vcftools --vcf /path/to/.vcf --minGQ 20 --recode --out /path/to/.vcf
 
 sed '/\.\/\./d' /path/to/.vcf > /path/to/.vcf
 
+# identify SNPs with a read depth < 10
+
+vcftools --vcf /path/to/.vcf --minDP 10 --recode --out /path/to/.vcf
+
+# remove SNPs with a read depth < 10
+
+sed '/\.\/\./d' /path/to/.vcf > /path/to/.vcf
+
+# identify SNPs within 10 bps of indels
+
+java -jar /path/to/GenomeAnalysisTK.jar -T VariantFiltration -R
+/path/to/.fasta -V /path/to/.vcf --mask /path/to/.vcf --maskExtension 10 
+--maskName "InDel" -o /path/to/.vcf
+
+# remove SNPs within 10 bps of indels
+
+grep -v 'InDel' /path/to/.vcf > /path/to/.vcf
+
+# remove SNPs within repeat regions
+
+vcftools --vcf /path/to/.vcf --exclude-bed repeats.bed --recode --out /path/to/.vcf
+
+# Now need to find centromere positions on each chromosome... Solignac et al. (2007) to the rescue.
+# Create database from reference genome 
+
+makeblastdb -in /path/to/.fasta -parse_seqids -dbtype nucl
+
+# blastn microsatellite sequences in centromeric regions from Solignac et a. (2007) 
+# to A. mellifera reference genome for each chromosome
+
+blastn -query /path/to/solignac_sequences.blast -db /path/to/.fasta -task
+
+blastn -outfmt 7 -max_target_seqs 10 -evalue 0.5 -perc_identity 95 >
+path/to/.out
+
+# Now that we know where the centromere positions are we can remove variants within them
+
+vcftools --vcf /path/to/.vcf --exclude-bed centromere.positions.bed --recode --out /path/to/.vcf
+
+# remove sites with more than two alleles
+
+vcftools --vcf /path/to/.vcf --recode --remove-filtered-all --max-alleles 2 --out /path/to/.vcf
+
+# identify heterozygous SNPs with an allele ratio < 0.15 and SNPs within potentially duplicated regions
+
+bcftools annotate -x INFO,^FORMAT/AD,^FORMAT/GT /path/to/.vcf > /path/to/.vcf
+
+sed '/^#/d' /path/to/.vcf > /path/to/.vcf
+
+cat /path/to/.vcf.vcf | awk '{print $1 "\t" $2 "\t" $10}' > /path/to/.bed
+
+bedtools subtract -header -a /path/to/.vcf -b /path/to/.bed > /path/to/.vcf
+
+bedtools subtract -header -a /path/to/.vcf -b /path/to/.bed > /path/to/.vcf
+
+# identify and remove heterozygous and homozygous SNPs
+
+grep -v '1/1:' /path/to/.vcf > /path/to/.vcf
+
+grep -v '0/1:' /path/to/.vcf > /path/to/.vcf
+
+# annotate SNPs with SnpEff
+
+snpeff amel.gff3 -s /path/to/.html -no-downstream -no-upstream /path/to/.vcf > /path/to/.vcf
 
