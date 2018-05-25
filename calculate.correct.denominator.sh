@@ -22,3 +22,17 @@ bedtools subtract -a .bed -b repeats.bed > .bed
 
 awk '$4 < 10'  .bed > .bed
 awk '$4 > twice.average.depth'  .bed > .bed
+
+# remove variant sites that did not pass filtering criteria
+
+sed '/^#/d' .vcf > .vcf
+cat .vcf | awk '{print $1 "\t" $2 "\t" $2}' > .bed
+bedtools subtract -a .bed -b .vcf > .bed
+
+# remove indel sites +/- 10 bp
+
+sed '/^#/d' .vcf > .vcf
+cat .vcf | awk '{print $1 "\t" $2 "\t" $2}' > .bed
+slopBed -i .bed -g -l 10 -r 10 > .bed
+
+bedtools subtract -a .bed -b .bed > .bed
