@@ -2,11 +2,11 @@
 
 #get every single position of amel4.5 genome and the read depth
 
- bedtools genomecov -ibam .bam -d > .bedgraph
+bedtools genomecov -ibam .bam -d > .bedgraph
 
 # convert to bed and print 1,2,2,3 first four columns for .bed format
 
- awk '{print $1 "\t" $2 "\t" $2 "\t" $3}' .bedgraph > .bed
+awk '{print $1 "\t" $2 "\t" $2 "\t" $3}' .bedgraph > .bed
 
 # remove scaffolds 17 and 18
 
